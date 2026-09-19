@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101f29">
+<title>Springheel — a little leverage</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23101f29'/%3E%3Cpath d='M11 25V11a7 7 0 1 1 10 6' fill='none' stroke='%238de0c3' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='11' cy='25' r='4' fill='%23ffc979'/%3E%3C/svg%3E">
+<style>
+:root{color-scheme:dark;--bg:#101f29;--panel:#142731;--ink:#e7ece7;--muted:#9ab0b5;--line:#31434b;--mint:#8de0c3;--gold:#ffc979;--coral:#ff8f77;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);overflow:hidden}button,select{font:inherit;color:inherit;background:#21353f;border:1px solid #3a4e57;border-radius:6px;min-height:36px;padding:7px 11px;cursor:pointer}button:hover,select:hover{background:#304751}button:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:3px}button[aria-pressed=true]{border-color:var(--mint);color:var(--mint)}header{height:66px;padding:0 22px;display:flex;align-items:center;gap:18px;background:var(--panel);border-bottom:1px solid var(--line)}h1{font-size:23px;letter-spacing:-1px;margin:0;font-weight:760}h1 span{color:var(--mint)}.edition{font-size:11px;letter-spacing:.13em;color:var(--muted);margin-top:2px}.course-picker{display:flex;align-items:center;gap:10px;margin-left:18px}.course-picker label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}select{max-width:250px;font-size:13px}nav{display:flex;gap:6px;margin-left:auto}nav button{font-size:12px}.compact{display:none}#stage{height:calc(100dvh - 66px);position:relative}#game{display:block;width:100%;height:100%;touch-action:none;outline:none;cursor:crosshair}.readout{position:absolute;pointer-events:none;font-variant-numeric:tabular-nums}#mission{top:21px;left:25px;max-width:min(520px,70vw)}#mission .number{font:11px ui-monospace,monospace;color:var(--mint);letter-spacing:.12em}#mission h2{font-size:26px;font-weight:600;letter-spacing:-.6px;margin:5px 0 7px}#mission p{font-size:13px;line-height:1.5;color:#b6c7c7;margin:0;max-width:480px}#run{top:23px;right:25px;text-align:right;line-height:1.5}#clock{font:25px ui-monospace,monospace;letter-spacing:-1px}#best,#checkpoint{font-size:11px;color:var(--muted)}#status{position:absolute;top:130px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.02em;color:var(--mint);background:#152a34e8;border:1px solid #49645c;border-radius:20px;padding:8px 16px;max-width:80vw;text-align:center;pointer-events:none;opacity:0;transition:opacity .2s}#status.show{opacity:1}#bottom{position:absolute;bottom:18px;left:24px;right:24px;display:flex;align-items:flex-end;justify-content:space-between;gap:14px;pointer-events:none}#controls{font-size:12px;line-height:1.9;color:#aec1c4;background:#10222be8;border:1px solid #30444d;padding:12px 16px;border-radius:8px;max-width:460px}kbd{font:11px ui-monospace,monospace;border:1px solid #566771;border-bottom-width:2px;padding:2px 5px;border-radius:4px;color:var(--ink);white-space:nowrap}#controls strong{color:var(--ink);font-weight:500}.subtle{color:var(--muted);font-size:11px}#instruments{display:flex;align-items:center;gap:16px;background:#10222bf0;border:1px solid #30444d;border-radius:8px;padding:10px 15px;width:285px}#wheel{width:64px;height:64px;flex-shrink:0}.instrument-copy{width:170px}.instrument-title{font-size:10px;color:var(--muted);letter-spacing:.12em;margin-bottom:5px}.reserves{display:flex;justify-content:space-between;font:12px ui-monospace,monospace}.reserve{width:72px}.reserve:first-child{color:var(--gold)}.reserve:last-child{color:var(--mint)}.track{height:4px;background:#334550;border-radius:3px;margin-top:5px;overflow:hidden}.fill{height:100%;background:currentColor;transform-origin:left}.stroke{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:8px}#curtain{position:absolute;inset:0;background:#0c19268c;display:grid;place-items:center;backdrop-filter:blur(3px)}#curtain[hidden]{display:none}.pause-card{max-width:430px;padding:32px;text-align:center;background:var(--panel);border:1px solid #52706b;border-radius:12px;box-shadow:0 24px 70px #0005}.pause-card h2{margin:0 0 12px;font-size:27px}.pause-card p{font-size:14px;line-height:1.6;color:#b7cccc}.pause-card button{margin:8px 4px 0}.primary{background:#9cdec4;color:#122b27;border-color:#9cdec4}.primary:hover{background:#bbf0d8}dialog{color:var(--ink);background:#152a34;border:1px solid #55706d;border-radius:12px;max-width:690px;width:calc(100vw - 32px);max-height:85dvh;padding:28px;line-height:1.65}dialog::backdrop{background:#091723c9;backdrop-filter:blur(4px)}dialog h2{font-size:26px;margin:0 0 14px;letter-spacing:-.7px}dialog h3{font-size:15px;color:var(--mint);margin:18px 0 6px}dialog p{font-size:13px;color:#c3d1d2;margin:8px 0}dialog table{border-collapse:collapse;width:100%;font-size:12px}dialog td{padding:7px;border-bottom:1px solid #304750;vertical-align:top}dialog td:first-child{width:155px}dialog .close{float:right}#touch{display:none;position:absolute;left:12px;right:12px;bottom:12px;justify-content:space-between;pointer-events:none;gap:8px}#touch>div{display:flex;gap:5px}#touch button{pointer-events:auto;touch-action:none;min-width:46px;min-height:44px;background:#1b343fed}#touch button.active{border-color:var(--mint);background:#345650}@media(pointer:coarse){#touch{display:flex}#controls{display:none}#bottom{bottom:70px;justify-content:flex-end}#instruments{width:255px;padding:7px 10px}}@media(max-width:850px){header{padding:0 12px;gap:10px}.edition{display:none}.course-picker{margin:0}.course-picker label{display:none}nav button{padding:7px 8px}#controls{font-size:11px;max-width:385px;padding:10px}#instruments{width:250px;gap:8px}#mission{left:18px;top:16px}#mission h2{font-size:22px}#mission p{max-width:370px;font-size:12px}#run{right:18px;top:17px}#bottom{left:16px;right:16px}}@media(max-width:600px){header{height:104px;flex-wrap:wrap;align-content:center;gap:8px}h1{font-size:22px}.course-picker{margin-left:auto}select{max-width:235px}nav{width:100%;justify-content:space-between;gap:6px}nav button{flex:1}#stage{height:calc(100dvh - 104px)}#mission{max-width:65vw}#mission h2{font-size:18px}#mission p{font-size:11px;max-width:225px}#clock{font-size:20px}#controls{display:none}#bottom{justify-content:flex-end;bottom:16px}#instruments{width:246px}#mission .number{font-size:10px}#status{top:142px}dialog{padding:20px}dialog td:first-child{width:110px}}@media(max-width:600px) and (pointer:coarse){#bottom{bottom:70px}}@media(prefers-reduced-motion:reduce){#status{transition:none}#curtain,dialog::backdrop{backdrop-filter:none}}
+</style>
+</head>
+<body>
+<header>
+<div><h1>spring<span>heel</span></h1><div class="edition">A LITTLE LEVERAGE</div></div>
+<div class="course-picker"><label for="course">Course</label><select id="course" aria-label="Select a course"></select></div>
+<nav aria-label="Game controls"><button id="retry" title="R: checkpoint · Shift+R: start over">Retry <span class="subtle">R</span></button><button id="pause" aria-pressed="false">Pause</button><button id="overview" aria-pressed="false" title="V">Map</button><button id="sound" aria-pressed="false" title="M">Sound off</button><button id="help" title="H">Field guide</button></nav>
+</header>
+<main id="stage">
+<canvas id="game" tabindex="0" aria-label="Springheel physics playground. Aim the spring leg with the mouse, extend with left click, retract with right click, and rotate the hook with A and D. Press H for instructions."></canvas>
+<div id="mission" class="readout"><div class="number" id="course-number"></div><h2 id="course-title"></h2><p id="course-hint"></p></div>
+<div id="run" class="readout"><div id="clock">0:00.00</div><div id="best">BEST —</div><div id="checkpoint">START · unlimited retries</div></div>
+<div id="status" role="status" aria-live="polite"></div>
+<div id="bottom">
+<div id="controls"><div><strong>Point below you.</strong> <kbd>Left mouse</kbd> extend / kick · <kbd>Right</kbd> tuck</div><div><kbd>A</kbd> <kbd>D</kbd> turn the hook · <kbd>S</kbd> brake the flywheel</div><div class="subtle"><kbd>R</kbd> checkpoint · <kbd>V</kbd> map · <kbd>I</kbd> flight arc · <kbd>G</kbd> ghost · <kbd>H</kbd> guide</div></div>
+<div id="instruments"><canvas id="wheel" width="128" height="128" aria-hidden="true"></canvas><div class="instrument-copy"><div class="instrument-title">GYRO KICK RESERVE</div><div class="reserves"><div class="reserve">A <span id="reserve-a">100%</span><div class="track"><div class="fill" id="fill-a"></div></div></div><div class="reserve">D <span id="reserve-d">100%</span><div class="track"><div class="fill" id="fill-d"></div></div></div></div><div class="stroke"><span id="spin">0 rad/s</span><span id="leg-state">LEG · REST</span></div></div></div>
+</div>
+<div id="touch" aria-label="Touch controls"><div><button data-key="KeyA" aria-label="Turn hook counterclockwise">A ↶</button><button data-key="KeyS" aria-label="Brake flywheel">S</button><button data-key="KeyD" aria-label="Turn hook clockwise">D ↷</button></div><div><button data-action="tuck">Tuck</button><button data-action="kick">Kick</button></div></div>
+<div id="curtain" hidden><section class="pause-card"><h2 id="curtain-title">Take a breather.</h2><p id="curtain-text">Your spring will keep.</p><button id="resume" class="primary">Keep going</button><button id="restart-run">Start over</button></section></div>
+</main>
+<dialog id="manual" aria-labelledby="manual-title"><button class="close" id="close-guide">Close</button><h2 id="manual-title">A little leverage.</h2><p>You are a spring leg, a flywheel, and a decidedly useful hook. Reach the striped gate. No lives, no damage, no timer limit. Every pennant is a checkpoint; the low floors are there to catch you.</p><h3>Start with a hop</h3><p>Point <strong>below and a little behind</strong> the machine, then hold left mouse to extend. Release to settle back to the normal length. Right mouse retracts the leg; tuck, then extend for a bigger hop. Aim at the ground you want to push <em>away from</em>, not the place you want to go.</p><h3>Free aim. Real recoil.</h3><p>The leg attaches at the central axle and can aim all the way around. A motor moves its resting angle, rather than teleporting the foot. The body takes the opposite reaction. In open air you can rearrange yourself, but you cannot steer the combined centre of mass.</p><h3>Use your head. It is a hook.</h3><p>Turn with A / D to put the open throat around a ledge or brass lip. The curved chassis can bear your weight and pivot on contact. There is no grab button, snap, glue, or invisible rope. Peel out with A, or push away with the leg to release. A deeply loaded hook may need a swing first. The brass practice rail is a good place to learn.</p><button id="hanging-start">Try a hanging start in the yard</button><h3>The flywheel is not a jetpack</h3><p>A / D ask the motor for a steady turn rate, trading angular momentum between the wheel and chassis. Let go to coast against air resistance: slow turns remain useful, while fast spins fade quickly. Drag acts only on the exposed chassis, not the enclosed flywheel. The unequal coloured sectors and white spoke show its actual rotation. The two rim arcs and reserve bars show how much acceleration remains in <em>each direction</em>. At the wheel's speed limit that direction runs out. Reverse to recover headroom, or use S to brake the wheel <em>relative to the chassis</em>—which also reacts on the chassis. Air carries away chassis angular momentum; the flywheel does not magically recharge.</p><table><tr><td><kbd>Mouse</kbd></td><td>Aim the leg in world space, independently of the hook.</td></tr><tr><td><kbd>Left / right</kbd></td><td>Extend / retract resting length. Right takes priority when both are held.</td></tr><tr><td><kbd>A</kbd> / <kbd>D</kbd> · <kbd>S</kbd></td><td>Rotate hook anticlockwise / clockwise · relative wheel brake.</td></tr><tr><td><kbd>R</kbd> · <kbd>Shift R</kbd></td><td>Retry checkpoint · restart course and clock.</td></tr><tr><td><kbd>V</kbd> · <kbd>P</kbd> / <kbd>Esc</kbd></td><td>Paused course overview · pause.</td></tr><tr><td><kbd>I</kbd> · <kbd>G</kbd> · <kbd>M</kbd></td><td>Ballistic centre-of-mass guide · best-run ghost · sound.</td></tr></table><p class="subtle">On touch screens: drag on the playfield to aim; use the bottom buttons to kick, tuck, and turn. Local bests and ghosts stay in this browser. A retry keeps the clock running. The dotted flight guide ignores future contacts and is not a foot trajectory.</p></dialog>
+<script id="physics">
+/* Springheel physics. Pixels are consistent simulation units, not metres.
+   The body COM is the axle (the lower counterweight balances the hook).
+   The foot has mass; the telescoping rod is massless. The rotor has its own
+   ABSOLUTE angular velocity. Air drag acts on the exposed chassis only. */
+'use strict';
+const SpringheelPhysics = (() => {
+  const TAU=Math.PI*2, DT=1/240;
+  const P=Object.freeze({bodyMass:7,footMass:1,bodyI:9500,rotorI:7500,gravity:950,
+    springK:1500,springD:64,springMax:80000,aimK:2400000,aimD:85000,aimMax:1200000,
+    gyroTorque:400000,rotorLimit:80,brake:35000,turnRate:5,turnGain:14,airLinear:.9,airQuadratic:.25,rest:96,tuck:45,extend:174});
+  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+  const wrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
+  const hook=[[-16,12],[-29,-12],[-31,-38],[-18,-63],[7,-73],[32,-64],[47,-48],[47,-35]];
+  const hull=[{x:0,y:0,r:20},{x:2,y:16,r:12}];
+  for(let k=1;k<hook.length;k++){
+    const a=hook[k-1],b=hook[k],n=Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/7);
+    for(let j=0;j<=n;j++){const t=j/n;hull.push({x:a[0]+(b[0]-a[0])*t,y:a[1]+(b[1]-a[1])*t,r:6});}
+  }
+  function create(x=180,y=410){return {b:{x,y,vx:0,vy:0,a:0,w:0},f:{x,y:y+P.rest,vx:0,vy:0},rotor:{a:0,w:0},rest:P.rest,time:0,contacts:0,hookContacts:0,impact:0};}
+  function polygon(points,kind='stone'){
+    return {points,kind,minX:Math.min(...points.map(p=>p[0])),maxX:Math.max(...points.map(p=>p[0])),minY:Math.min(...points.map(p=>p[1])),maxY:Math.max(...points.map(p=>p[1]))};
+  }
+  const box=(x,y,w,h,kind='stone')=>polygon([[x,y],[x+w,y],[x+w,y+h],[x,y+h]],kind);
+  function circlePoly(x,y,r,p){
+    if(x+r<p.minX||x-r>p.maxX||y+r<p.minY||y-r>p.maxY)return null;
+    let best=Infinity,qx=0,qy=0,enx=0,eny=-1,inside=false;
+    for(let i=0,j=p.points.length-1;i<p.points.length;j=i++){
+      const a=p.points[j],b=p.points[i],ex=b[0]-a[0],ey=b[1]-a[1],ll=ex*ex+ey*ey;
+      const t=clamp(((x-a[0])*ex+(y-a[1])*ey)/(ll||1),0,1),cx=a[0]+ex*t,cy=a[1]+ey*t,d=(x-cx)**2+(y-cy)**2;
+      if(d<best){best=d;qx=cx;qy=cy;const l=Math.sqrt(ll)||1;enx=ey/l;eny=-ex/l;}
+      if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])inside=!inside;
+    }
+    const d=Math.sqrt(best);if(!inside&&d>=r)return null;
+    const nx=d>1e-8?(inside?-1:1)*(x-qx)/d:enx,ny=d>1e-8?(inside?-1:1)*(y-qy)/d:eny;
+    return {nx,ny,depth:inside?r+d:r-d,x:x-nx*r,y:y-ny*r};
+  }
+  function contactList(s,world){
+    const result=[],b=s.b,f=s.f,c=Math.cos(b.a),sn=Math.sin(b.a);
+    function sample(x,y,r,type,t=0,hookPart=false){
+      for(const p of world.solids){const q=circlePoly(x,y,r,p);if(q)result.push({...q,type,t,hookPart,n:0,jt:0,mu:type==='foot'?1.25:.82});}
+      for(const p of world.pegs||[]){const dx=x-p.x,dy=y-p.y,d=Math.hypot(dx,dy),depth=r+p.r-d;if(depth>0){const nx=d>1e-8?dx/d:0,ny=d>1e-8?dy/d:-1;result.push({x:x-nx*r,y:y-ny*r,nx,ny,depth,type,t,hookPart,n:0,jt:0,mu:1.05});}}
+    }
+    sample(f.x,f.y,10,'foot');
+    for(let i=0;i<hull.length;i++){const p=hull[i];sample(b.x+c*p.x-sn*p.y,b.y+sn*p.x+c*p.y,p.r,'body',0,i>1);}
+    const count=Math.ceil(Math.hypot(f.x-b.x,f.y-b.y)/11);
+    for(let i=2;i<count;i++){const t=i/count;sample(b.x+(f.x-b.x)*t,b.y+(f.y-b.y)*t,3,'leg',t);}
+    return result;
+  }
+  function jacobian(s,q,nx,ny){
+    if(q.type==='body'){const cross=(q.x-s.b.x)*ny-(q.y-s.b.y)*nx;return {b:1,f:0,a:cross,m:1/P.bodyMass+cross*cross/P.bodyI};}
+    if(q.type==='foot')return {b:0,f:1,a:0,m:1/P.footMass};
+    const b=1-q.t,f=q.t;return {b,f,a:0,m:b*b/P.bodyMass+f*f/P.footMass};
+  }
+  const speed=(s,j,nx,ny)=>j.b*(s.b.vx*nx+s.b.vy*ny)+j.f*(s.f.vx*nx+s.f.vy*ny)+j.a*s.b.w;
+  function impulse(s,j,nx,ny,v){s.b.vx+=v*j.b*nx/P.bodyMass;s.b.vy+=v*j.b*ny/P.bodyMass;s.f.vx+=v*j.f*nx/P.footMass;s.f.vy+=v*j.f*ny/P.footMass;s.b.w+=v*j.a/P.bodyI;}
+  function resolve(s,world,dt){
+    const qs=contactList(s,world);s.contacts=qs.length;s.hookContacts=qs.filter(q=>q.hookPart).length;s.impact=0;
+    for(const q of qs){q.jn=jacobian(s,q,q.nx,q.ny);q.jtangent=jacobian(s,q,-q.ny,q.nx);const vn=speed(s,q.jn,q.nx,q.ny);q.bounce=vn< -180?-vn*.06:0;s.impact=Math.max(s.impact,-vn);}
+    for(let n=0;n<7;n++)for(const q of qs){
+      const old=q.n;q.n=Math.max(0,old+(q.bounce-speed(s,q.jn,q.nx,q.ny))/q.jn.m);impulse(s,q.jn,q.nx,q.ny,q.n-old);
+      const ot=q.jt;q.jt=clamp(ot-speed(s,q.jtangent,-q.ny,q.nx)/q.jtangent.m,-q.mu*q.n,q.mu*q.n);impulse(s,q.jtangent,-q.ny,q.nx,q.jt-ot);
+    }
+    // Small contact-only position repair; never used as locomotion or a grab.
+    for(const q of qs){const j=q.jn,v=Math.min(3,Math.max(0,q.depth-.15)*.22)/j.m;s.b.x+=v*j.b*q.nx/P.bodyMass;s.b.y+=v*j.b*q.ny/P.bodyMass;s.f.x+=v*j.f*q.nx/P.footMass;s.f.y+=v*j.f*q.ny/P.footMass;s.b.a+=v*j.a/P.bodyI;}
+  }
+  function step(s,input={},world={solids:[],pegs:[]},dt=DT){
+    const b=s.b,f=s.f,r=s.rotor;
+    const wanted=input.tuck?P.tuck:input.kick?P.extend:P.rest;
+    s.rest+=clamp(wanted-s.rest,-660*dt,530*dt);
+    const dx=f.x-b.x,dy=f.y-b.y,len=Math.max(.001,Math.hypot(dx,dy)),nx=dx/len,ny=dy/len;
+    const dvx=f.vx-b.vx,dvy=f.vy-b.vy,vr=dvx*nx+dvy*ny,va=(nx*dvy-ny*dvx)/len;
+    const target=Number.isFinite(input.aim)?input.aim:Math.atan2(dy,dx);
+    const torque=clamp(P.aimK*wrap(target-Math.atan2(dy,dx))-P.aimD*va,-P.aimMax,P.aimMax);
+    const radial=clamp(P.springK*(s.rest-len)-P.springD*vr,-P.springMax,P.springMax);
+    const tangent=torque/Math.max(25,len),fx=radial*nx-tangent*ny,fy=radial*ny+tangent*nx;
+    const g=world.gravity===undefined?P.gravity:world.gravity;
+    b.vx-=fx/P.bodyMass*dt;b.vy+=(g-fy/P.bodyMass)*dt;f.vx+=fx/P.footMass*dt;f.vy+=(g+fy/P.footMass)*dt;
+    // Equal/opposite orbital and chassis angular impulses, including short legs.
+    b.w-=(dx*fy-dy*fx)/P.bodyI*dt;
+    const rel=r.w-b.w,invI=1/P.rotorI+1/P.bodyI;
+    // Rate control makes holding a direction predictable; it still only applies
+    // equal/opposite motor torque. Releasing coasts, not an angular-velocity reset.
+    const command=clamp(input.gyro||0,-1,1);
+    let motor=0;
+    if(input.brake)motor=clamp(-rel*P.brake,-P.gyroTorque,P.gyroTorque);
+    else if(command)motor=clamp((b.w-command*P.turnRate)*P.bodyI*P.turnGain,-P.gyroTorque,P.gyroTorque);
+    // Saturation constrains the motor's impulse, NEVER clamps either body's speed.
+    if(motor>0)motor=Math.min(motor,Math.max(0,(P.rotorLimit-rel)/(invI*dt)));
+    if(motor<0)motor=Math.max(motor,Math.min(0,(-P.rotorLimit-rel)/(invI*dt)));
+    r.w+=motor/P.rotorI*dt;b.w-=motor/P.bodyI*dt;
+    // External air torque: -I * density * (linear*w + quadratic*w*abs(w)).
+    // Exact drag-only integration cannot reverse spin or overshoot at high speed.
+    // The enclosed rotor is untouched; air carries away the lost angular momentum.
+    const density=world.airDensity===undefined?1:Math.max(0,world.airDensity);
+    const decay=Math.exp(-P.airLinear*density*dt);
+    b.w=b.w*decay/(1+P.airQuadratic/P.airLinear*Math.abs(b.w)*(1-decay));
+    b.x+=b.vx*dt;b.y+=b.vy*dt;f.x+=f.vx*dt;f.y+=f.vy*dt;b.a=wrap(b.a+b.w*dt);r.a=wrap(r.a+r.w*dt);
+    if(world.solids.length||(world.pegs||[]).length)resolve(s,world,dt);else{s.contacts=0;s.hookContacts=0;s.impact=0;}
+    s.time+=dt;return s;
+  }
+  function momentum(s){const {b,f,rotor:r}=s;return {x:P.bodyMass*b.vx+P.footMass*f.vx,y:P.bodyMass*b.vy+P.footMass*f.vy,angular:P.bodyMass*(b.x*b.vy-b.y*b.vx)+P.footMass*(f.x*f.vy-f.y*f.vx)+P.bodyI*b.w+P.rotorI*r.w};}
+  function com(s){return {x:(P.bodyMass*s.b.x+P.footMass*s.f.x)/(P.bodyMass+P.footMass),y:(P.bodyMass*s.b.y+P.footMass*s.f.y)/(P.bodyMass+P.footMass),vx:(P.bodyMass*s.b.vx+P.footMass*s.f.vx)/(P.bodyMass+P.footMass),vy:(P.bodyMass*s.b.vy+P.footMass*s.f.vy)/(P.bodyMass+P.footMass)};}
+  function reserve(s){const rel=s.rotor.w-s.b.w;return {a:clamp(1-rel/P.rotorLimit,0,1),d:clamp(1+rel/P.rotorLimit,0,1),rel};}
+  return {P,DT,hook,hull,clamp,wrap,create,box,polygon,step,com,momentum,reserve,circlePoly,contactList};
+})();
+</script>
+<script id="game-code">
+(() => {
+'use strict';
+const F=SpringheelPhysics;
+const el=id=>document.getElementById(id),canvas=el('game'),ctx=canvas.getContext('2d'),wheel=el('wheel'),wg=wheel.getContext('2d');
+const {box,polygon}=F;
+function course(name,hint,start,solids,checks,goal,pegs=[],extra={}){return {name,hint,start,solids,checks,goal,pegs,width:goal?goal[0]+230:2200,top:-100,bottom:980,...extra};}
+const courses=[
+course('First spring','Point down and slightly left. Extend to hop right. The low steps will wait for you.',[180,454],
+ [box(-350,560,970,450),box(620,500,370,510),box(990,435,350,575),box(1340,370,570,640)],
+ [[790,500],[1150,435]],[1660,370]),
+course('Room to land','Wide landings. Small gaps. A lower path catches the hops that do not quite make it.',[150,394],
+ [box(-300,500,680,520),box(530,440,330,580),box(1020,385,350,635),box(1530,330,490,690),box(380,710,150,310),box(860,660,160,360),box(1370,610,160,410)],
+ [[680,440],[1190,385]],[1780,330]),
+course('A little leverage','Tuck to reset your stroke. Low steps lead to a long, patient climb.',[170,474],
+ [box(-300,580,760,440),polygon([[460,580],[820,430],[1010,430],[1010,1020],[460,1020]]),box(1010,350,360,670),box(1370,270,370,750),box(1740,195,500,825)],
+ [[850,430],[1510,270]],[2010,195]),
+course('The useful end','Turn the hook with A / D. The brass lip is solid: curl around it and let contact do the holding.',[170,474],
+ [box(-300,580,800,440),box(500,470,290,550),box(790,345,390,675),box(1180,250,460,770),box(1640,160,450,860)],
+ [[640,470],[1360,250]],[1870,160],[{x:725,y:341,r:8,wall:790},{x:1115,y:246,r:8,wall:1180}]),
+course('Under the eaves','A roof is something to push against. Keep the leg tucked when you swing the hook through.',[170,474],
+ [box(-300,580,890,440),box(590,505,360,515),box(950,420,420,600),box(1370,340,680,680),box(430,195,400,42,'beam'),box(930,80,480,42,'beam')],
+ [[750,505],[1190,420]],[1820,340],[{x:835,y:215,r:9},{x:1415,y:100,r:9}]),
+course('Across the workshop','The brass rails are optional handholds. Reverse the gyro before one direction runs out.',[170,474],
+ [box(-300,580,750,440),box(450,720,170,300),box(620,485,320,535),box(940,650,170,370),box(1110,385,370,635),box(1480,580,170,440),box(1650,290,550,730)],
+ [[760,485],[1280,385]],[1970,290],[{x:500,y:335,r:10},{x:995,y:265,r:10},{x:1540,y:205,r:10}]),
+course('Home before dusk','A little of everything. Take the next foothold, not the entire hillside.',[170,474],
+ [box(-300,580,760,440),box(460,500,360,520),box(820,420,330,600),box(1150,650,140,370),box(1290,355,440,665),polygon([[1730,355],[2050,220],[2310,220],[2310,1020],[1730,1020]]),box(2310,135,450,885),box(2760,55,470,965)],
+ [[630,500],[1480,355],[2140,220],[2510,135]],[2990,55],[{x:1225,y:350,r:9,wall:1290},{x:2695,y:49,r:8,wall:2760}],{width:3260,top:-210}),
+course('Free-practice yard','No finish line. Try the spring, the brass rail, and the hook. R always takes you home.',[210,474],
+ [box(-400,580,1100,440),box(700,500,310,520),box(1010,390,370,630),box(1380,265,700,755),box(230,225,280,35,'beam')],[],null,
+ [{x:555,y:275,r:10},{x:635,y:495,r:8,wall:700},{x:1315,y:260,r:8,wall:1380}],{width:2250})
+];
+// Goal/checkpoint arrays are converted once, avoiding overloaded coordinates below.
+for(const l of courses){for(const p of l.pegs)if(p.wall!==undefined)l.solids.push(box(p.x,p.y-4,p.wall-p.x+12,8,'brass'));l.checks=l.checks.map(([x,y])=>({x,y}));if(l.goal)l.goal={x:l.goal[0],y:l.goal[1]};l.width=l.goal?l.goal.x+230:l.width;}
+let state,level,index=0,checkpoint=-1,elapsed=0,finished=false,paused=false,overview=false,showArc=false,showGhost=true,muted=true;
+let view={x:0,y:0,scale:1},W=1000,H=700,dpr=1,accumulator=0,last=0,uiTick=0,toastUntil=0,started=false,ghost=[],recording=[],sampleAt=0,saveWarning=false;
+const keys=new Set(),touchKeys=new Set(),mouse={x:0,y:0,known:false,buttons:0},touchActions=new Set();
+let aim=Math.PI/2,initialAim=true,audio=null,lastSound=0;
+const storageKey='springheel-hook-v1';let scores={};
+try{const stored=JSON.parse(localStorage.getItem(storageKey)||'{}');if(stored&&typeof stored==='object'&&!Array.isArray(stored))scores=stored;}catch{}
+function bestFor(i){const v=scores[i];if(!v||!Number.isFinite(v.time)||v.time<=0||!Array.isArray(v.ghost))return null;return v;}
+const time=t=>{const c=Math.floor(t*100+1e-6);return `${Math.floor(c/6000)}:${String(Math.floor(c/100)%60).padStart(2,'0')}.${String(c%100).padStart(2,'0')}`;};
+function toast(text,seconds=3){el('status').textContent=text;toastUntil=performance.now()+seconds*1000;el('status').classList.add('show');}
+function clearInput(){keys.clear();touchKeys.clear();touchActions.clear();mouse.buttons=0;document.querySelectorAll('#touch .active').forEach(b=>b.classList.remove('active'));}
+function resize(){const r=canvas.getBoundingClientRect();W=r.width;H=r.height;dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);}
+window.addEventListener('resize',resize);resize();
+function load(i){
+ index=F.clamp(i,0,courses.length-1);level=courses[index];state=F.create(...level.start);checkpoint=-1;elapsed=0;finished=false;paused=false;overview=false;started=false;aim=Math.PI/2;initialAim=true;mouse.known=false;recording=[];sampleAt=0;accumulator=0;clearInput();
+ const b=bestFor(index);ghost=b?b.ghost.filter(p=>Array.isArray(p)&&p.length===7&&p.every(Number.isFinite)):[];
+ el('course').value=String(index);el('course-number').textContent=index===7?'THE WORKSHOP · FREE PRACTICE':`COURSE ${String(index+1).padStart(2,'0')} / 07`;
+ el('course-title').textContent=level.name;el('course-hint').textContent=level.hint;el('best').textContent=b?'BEST '+time(b.time):'BEST —';el('checkpoint').textContent='START · unlimited retries';
+ view.scale=baseScale();view.x=state.b.x-W/view.scale*.3;view.y=state.b.y-H/view.scale*.56;setCurtain();toast('Point below the axle. Left mouse extends the spring.',5);
+}
+for(let i=0;i<courses.length;i++){const o=document.createElement('option');o.value=i;o.textContent=i===7?'Yard · free practice':`${String(i+1).padStart(2,'0')} · ${courses[i].name}`;el('course').append(o);}
+el('course').addEventListener('change',e=>{load(Number(e.target.value));canvas.focus();});
+function reset(all=false){if(all||finished){load(index);return;}const p=checkpoint>=0?level.checks[checkpoint]:{x:level.start[0],y:level.start[1]+106};state=F.create(p.x,p.y-106);accumulator=0;aim=Math.PI/2;initialAim=true;mouse.known=false;clearInput();toast(checkpoint>=0?'Back at your pennant. Nothing lost.':'Back on your feet.');sound('retry');}
+function controls(){
+ if(mouse.known&&!overview){const x=view.x+mouse.x/view.scale-state.b.x,y=view.y+mouse.y/view.scale-state.b.y;if(Math.hypot(x,y)>18){aim=Math.atan2(y,x);initialAim=false;}}
+ const down=k=>keys.has(k)||touchKeys.has(k);
+ return {aim,kick:!!(mouse.buttons&1)||touchActions.has('kick'),tuck:!!(mouse.buttons&2)||touchActions.has('tuck'),gyro:(down('KeyD')?1:0)-(down('KeyA')?1:0),brake:down('KeyS')};
+}
+function active(){return !paused&&!overview&&!finished&&!el('manual').open;}
+function step(){
+ const input=controls();if(input.kick||input.tuck||input.gyro||input.brake||(!initialAim&&Math.abs(F.wrap(aim-Math.PI/2))>.1))started=true;
+ F.step(state,input,level);if(started)elapsed+=F.DT;
+ if(state.impact>220&&performance.now()-lastSound>140){sound('land',Math.min(1,state.impact/600));lastSound=performance.now();}
+ if(![state.b.x,state.b.y,state.f.x,state.f.y,state.b.a,state.b.w,state.rotor.w].every(Number.isFinite)){reset();toast('The mechanism slipped. Reset to your checkpoint.');return;}
+ if(state.b.y>level.bottom||state.b.x< -600||state.b.x>level.width+400){reset();return;}
+ for(let i=checkpoint+1;i<level.checks.length;i++){const p=level.checks[i];if(Math.abs(state.b.x-p.x)<66&&state.b.y<p.y+20&&state.b.y>p.y-180){checkpoint=i;el('checkpoint').textContent=`PENNANT ${i+1} / ${level.checks.length} · R to retry`;toast('Pennant saved. Your next foothold is ahead.');sound('check');}}
+ if(started&&elapsed>=sampleAt&&recording.length<9000){recording.push([+elapsed.toFixed(3),+state.b.x.toFixed(1),+state.b.y.toFixed(1),+state.b.a.toFixed(3),+state.f.x.toFixed(1),+state.f.y.toFixed(1),+state.rotor.a.toFixed(3)]);sampleAt=elapsed+1/15;}
+ if(level.goal){const p=level.goal;if(Math.abs(state.b.x-p.x)<45&&state.b.y<p.y+10&&state.b.y>p.y-175)finish();}
+}
+function finish(){finished=true;clearInput();sound('finish');const old=bestFor(index),isBest=!old||elapsed<old.time;
+ if(isBest&&started){scores[index]={time:elapsed,ghost:recording};try{localStorage.setItem(storageKey,JSON.stringify(scores));}catch{saveWarning=true;}el('best').textContent='BEST '+time(elapsed);}
+ setCurtain();el('curtain-title').textContent='A good landing.';el('curtain-text').textContent=`${level.name} in ${time(elapsed)}.${isBest?' A new personal best.':''}${saveWarning?' Storage is full or blocked; this best is available for this session only.':''}`;el('resume').textContent=index<6?'Next course':'Visit the yard';}
+function setCurtain(){el('curtain').hidden=overview||(!paused&&!finished);el('pause').setAttribute('aria-pressed',String(paused));el('pause').textContent=overview?'Pause':paused?'Resume':'Pause';el('overview').setAttribute('aria-pressed',String(overview));if(!finished){el('curtain-title').textContent='Take a breather.';el('curtain-text').textContent='The spring, the clock, and the hillside can wait.';el('resume').textContent='Keep going';}}
+function togglePause(){if(finished)return;if(overview){overview=false;paused=true;}else paused=!paused;clearInput();accumulator=0;setCurtain();}
+function toggleMap(){if(finished)return;overview=!overview;clearInput();accumulator=0;setCurtain();toast(overview?'COURSE OVERVIEW · paused · V or click the map to return':paused?'Still paused. Resume when ready.':'Back to the next foothold.');}
+function help(){clearInput();if(!el('manual').open)el('manual').showModal();}
+el('close-guide').onclick=()=>el('manual').close();el('manual').addEventListener('close',()=>{clearInput();accumulator=0;canvas.focus();});
+function hangingStart(){el('manual').close();load(7);const p=level.pegs[0];state=F.create(p.x-5,p.y+36);toast('Already threaded. Hold A to peel out, or use the leg to push off.',6);canvas.focus();}
+el('hanging-start').onclick=hangingStart;
+el('retry').onclick=e=>{reset(e.shiftKey);canvas.focus();};el('pause').onclick=togglePause;el('overview').onclick=toggleMap;el('help').onclick=help;
+el('resume').onclick=()=>{if(finished)load(index<6?index+1:7);else togglePause();canvas.focus();};el('restart-run').onclick=()=>{load(index);canvas.focus();};
+function toggleSound(){muted=!muted;el('sound').textContent=muted?'Sound off':'Sound on';el('sound').setAttribute('aria-pressed',String(!muted));if(!muted)sound('check');}
+el('sound').onclick=toggleSound;
+function sound(type,strength=1){if(muted)return;try{if(!audio)audio=new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume().catch(()=>{});const t=audio.currentTime,o=audio.createOscillator(),filter=audio.createBiquadFilter(),gain=audio.createGain();o.type='triangle';const f=type==='check'?540:type==='finish'?660:type==='retry'?190:100+strength*80;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(type==='land'?45:f*1.5,t+.14);filter.type='lowpass';filter.frequency.value=type==='land'?600:1200;gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.08*strength+.008,t+.008);gain.gain.exponentialRampToValueAtTime(.0001,t+.28);o.connect(filter);filter.connect(gain);gain.connect(audio.destination);o.start(t);o.stop(t+.3);o.onended=()=>{o.disconnect();filter.disconnect();gain.disconnect();};}catch{}}
+function pointer(e){const r=canvas.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;mouse.known=true;}
+canvas.addEventListener('pointermove',e=>{pointer(e);if(e.pointerType!=='touch')mouse.buttons=e.buttons;});
+canvas.addEventListener('pointerdown',e=>{e.preventDefault();if(overview){toggleMap();return;}if(!active())return;canvas.focus();pointer(e);if(e.pointerType!=='touch')mouse.buttons=e.buttons;try{canvas.setPointerCapture(e.pointerId);}catch{}});
+canvas.addEventListener('pointerup',e=>{if(e.pointerType!=='touch')mouse.buttons=e.buttons;});
+canvas.addEventListener('pointercancel',()=>{mouse.buttons=0;});canvas.addEventListener('lostpointercapture',()=>{mouse.buttons=0;});canvas.addEventListener('contextmenu',e=>e.preventDefault());
+window.addEventListener('pointerup',e=>{if(e.pointerType!=='touch')mouse.buttons=e.buttons;});
+for(const b of document.querySelectorAll('#touch button')){const change=on=>{if(b.dataset.key){if(on)touchKeys.add(b.dataset.key);else touchKeys.delete(b.dataset.key);}else{if(on)touchActions.add(b.dataset.action);else touchActions.delete(b.dataset.action);}b.classList.toggle('active',on);};b.addEventListener('pointerdown',e=>{e.preventDefault();if(active()){change(true);b.setPointerCapture(e.pointerId);}});for(const type of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(type,()=>change(false));}
+window.addEventListener('keydown',e=>{
+ if(el('manual').open)return;if(e.target instanceof HTMLSelectElement)return;
+ if(['KeyA','KeyS','KeyD','KeyR','KeyV','KeyI','KeyG','KeyH','KeyM','KeyP','Escape'].includes(e.code))e.preventDefault();
+ if(e.repeat)return;
+ if(e.code==='KeyR')reset(e.shiftKey);else if(e.code==='KeyV')toggleMap();else if(e.code==='KeyH')help();else if(e.code==='KeyM')toggleSound();else if(e.code==='KeyP'||e.code==='Escape')togglePause();else if(e.code==='KeyI'){showArc=!showArc;toast(showArc?'Dotted arc: centre of mass, free flight only.':'Flight guide off.');}else if(e.code==='KeyG'){showGhost=!showGhost;toast(showGhost?(ghost.length?'Best-run ghost on.':'Ghost on. Finish a course to record one.'):'Ghost off.');}else if(active())keys.add(e.code);
+});
+window.addEventListener('keyup',e=>keys.delete(e.code));
+function suspend(){clearInput();if(!finished&&!paused){paused=true;setCurtain();}accumulator=0;}
+window.addEventListener('blur',suspend);document.addEventListener('visibilitychange',()=>{if(document.hidden)suspend();});
+function baseScale(){return F.clamp(Math.min(W/1050,H/690),.62,1.22);}
+function updateView(dt){
+ let scale=baseScale(),x,y;if(overview){scale=Math.min((W-90)/(level.width+250),(H-200)/(level.bottom-level.top));scale=Math.max(.1,scale);x=-100-(W/scale-(level.width+250))/2;y=level.top-120/scale;}else{x=state.b.x-W/scale*.35+F.clamp(state.b.vx*.15,-80,100);y=state.b.y-H/scale*.53;}
+ const a=1-Math.exp(-dt*(overview?9:5));view.scale+=(scale-view.scale)*a;view.x+=(x-view.x)*a;view.y+=(y-view.y)*a;
+}
+function path(points,close=false){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));if(close)ctx.closePath();}
+function circle(g,x,y,r,fill,stroke,width=1){g.beginPath();g.arc(x,y,r,0,Math.PI*2);if(fill){g.fillStyle=fill;g.fill();}if(stroke){g.strokeStyle=stroke;g.lineWidth=width;g.stroke();}}
+function rotor(g,x,y,r,angle,alpha=1){g.save();g.translate(x,y);g.rotate(angle);g.globalAlpha*=alpha;circle(g,0,0,r,'#1c3540','#a5beb9',1.7);const sectors=[[-Math.PI/2,.4,'#91dfc3'],[.4,2.9,'#edb76d'],[2.9,Math.PI*1.5,'#517d8f']];for(const [a,b,c]of sectors){g.beginPath();g.moveTo(0,0);g.arc(0,0,r-3,a,b);g.closePath();g.fillStyle=c;g.fill();}g.beginPath();g.moveTo(0,0);g.lineTo(0,-r+2);g.strokeStyle='#f5f7dc';g.lineWidth=3;g.stroke();circle(g,0,0,r*.29,'#15303a','#d6e1ce',1.5);g.restore();}
+function drawMachine(s,alpha=1,isGhost=false){
+ const b=s.b,f=s.f;ctx.save();ctx.globalAlpha=alpha;
+ const dx=f.x-b.x,dy=f.y-b.y,len=Math.hypot(dx,dy),a=Math.atan2(dy,dx);
+ ctx.save();ctx.translate(b.x,b.y);ctx.rotate(a);ctx.lineCap='round';ctx.strokeStyle=isGhost?'#d8e8e8':'#4c6269';ctx.lineWidth=10;path([[0,0],[len,0]]);ctx.stroke();ctx.strokeStyle='#b3c8c3';ctx.lineWidth=4;path([[len*.48,0],[len-5,0]]);ctx.stroke();
+ ctx.strokeStyle='#ffc979';ctx.lineWidth=2.5;ctx.beginPath();for(let i=0;i<=26;i++){const x=18+(Math.max(24,len*.68)-18)*i/26,y=i===0||i===26?0:(i%2?-6:6);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();ctx.restore();
+ circle(ctx,f.x,f.y,10,isGhost?'#aacbc0':'#ffc979','#243a42',2.5);circle(ctx,f.x,f.y,3,'#51666b');
+ ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.a);circle(ctx,2,16,12,'#526a6c','#b3c5b9',2);path(F.hook);ctx.strokeStyle='#223640';ctx.lineWidth=18;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();ctx.strokeStyle=isGhost?'#b7e4d2':'#b5c4b5';ctx.lineWidth=12;ctx.stroke();path(F.hook.slice(-3));ctx.strokeStyle='#ffc979';ctx.lineWidth=10;ctx.stroke();circle(ctx,0,0,22,'#263f49','#b5c4b5',2);circle(ctx,2,20,3,'#22333e');ctx.restore();
+ rotor(ctx,b.x,b.y,18,s.rotor.a);
+ if(!isGhost){const r=F.reserve(s);ctx.lineWidth=2.5;ctx.strokeStyle='#ffc979';ctx.beginPath();ctx.arc(b.x,b.y,24,Math.PI*.56,Math.PI*.56+Math.PI*.78*r.a);ctx.stroke();ctx.strokeStyle='#8de0c3';ctx.beginPath();ctx.arc(b.x,b.y,24,-Math.PI*.44,-Math.PI*.44+Math.PI*.78*r.d);ctx.stroke();}
+ ctx.restore();
+}
+function background(){
+ ctx.fillStyle='#101f29';ctx.fillRect(0,0,W,H);
+ for(let layer=0;layer<3;layer++){ctx.beginPath();ctx.moveTo(0,H);for(let x=-30;x<=W+30;x+=24){const wx=x+view.x*(.04+layer*.035);const y=H*(.42+layer*.14)+Math.sin(wx*.004+layer)*45+Math.sin(wx*.009-layer)*20;ctx.lineTo(x,y);}ctx.lineTo(W,H);ctx.closePath();ctx.fillStyle=['#162a34','#1c343d','#203c43'][layer];ctx.fill();}
+ ctx.strokeStyle='#87b8af0b';ctx.lineWidth=1;const spacing=80*view.scale,offset=(-view.x*view.scale)%spacing;for(let x=offset;x<W;x+=spacing){ctx.beginPath();ctx.moveTo(x,155);ctx.lineTo(x,H);ctx.stroke();}
+}
+function drawTerrain(){
+ for(const p of level.solids){if(p.maxX<view.x-100||p.minX>view.x+W/view.scale+100)continue;path(p.points,true);ctx.fillStyle=p.kind==='brass'?'#b49663':p.kind==='beam'?'#52635f':'#516463';ctx.fill();ctx.strokeStyle='#263f46';ctx.lineWidth=2;ctx.stroke();
+ ctx.save();ctx.clip();ctx.strokeStyle='#223c422c';ctx.lineWidth=1;for(let x=Math.floor(p.minX/56)*56;x<p.maxX;x+=56){path([[x,p.minY+14],[x-180,Math.min(p.maxY,p.minY+370)]]);ctx.stroke();}ctx.restore();
+ for(let i=0;i<p.points.length;i++){const a=p.points[i],b=p.points[(i+1)%p.points.length];if(b[0]>a[0]&&Math.abs(b[1]-a[1])<b[0]-a[0]){path([a,b]);ctx.strokeStyle=p.kind==='brass'?'#f2c47b':p.kind==='beam'?'#b5c4ad':'#a6c4a4';ctx.lineWidth=5;ctx.stroke();}}
+ }
+ for(const p of level.pegs){if(p.wall===undefined)circle(ctx,p.x,p.y,18,'#2b4850','#466269',1.5);circle(ctx,p.x,p.y,p.r,'#f2c47b','#343f3f',2);circle(ctx,p.x,p.y,2,'#7a6749');}
+}
+function flag(p,n,lit){
+ ctx.strokeStyle=lit?'#9cf0c6':'#92aaa1';ctx.lineWidth=3;path([[p.x,p.y],[p.x,p.y-61]]);ctx.stroke();path([[p.x,p.y-61],[p.x+30,p.y-52],[p.x,p.y-41]],true);ctx.fillStyle=lit?'#8de0c3':'#647f7b';ctx.fill();ctx.font='11px ui-monospace,monospace';ctx.fillStyle=lit?'#ccf2da':'#9db2a9';ctx.textAlign='center';ctx.fillText(String(n),p.x+10,p.y-69);ctx.textAlign='left';
+}
+function drawGoal(){if(!level.goal)return;const p=level.goal;ctx.save();ctx.strokeStyle='#dfdab5';ctx.lineWidth=5;path([[p.x-34,p.y],[p.x-34,p.y-132],[p.x+34,p.y-132],[p.x+34,p.y]]);ctx.stroke();for(let j=0;j<8;j++){ctx.fillStyle=j%2?'#526c67':'#e1ddb5';ctx.fillRect(p.x-32+j*8,p.y-139,8,13);}ctx.font='10px ui-monospace,monospace';ctx.textAlign='center';ctx.fillStyle='#e3d5a7';ctx.fillText('HOME',p.x,p.y-153);ctx.restore();}
+function drawGhost(){if(!showGhost||!ghost.length||!started)return;let lo=0,hi=ghost.length-1;while(lo<hi){const mid=(lo+hi+1)>>1;if(ghost[mid][0]<=elapsed)lo=mid;else hi=mid-1;}const g=ghost[lo];if(elapsed-g[0]>.2)return;drawMachine({b:{x:g[1],y:g[2],a:g[3]},f:{x:g[4],y:g[5]},rotor:{a:g[6]}},.22,true);}
+function render(){
+ ctx.setTransform(dpr,0,0,dpr,0,0);background();ctx.save();ctx.scale(view.scale,view.scale);ctx.translate(-view.x,-view.y);drawTerrain();level.checks.forEach((p,i)=>flag(p,i+1,i<=checkpoint));drawGoal();
+ if(showArc&&!overview){const c=F.com(state);for(let t=0;t<1.5;t+=.075)circle(ctx,c.x+c.vx*t,c.y+c.vy*t+.5*F.P.gravity*t*t,2.2,'#e8d4a281');circle(ctx,c.x,c.y,4,null,'#f4e0a9',1);}
+ drawGhost();drawMachine(state);if(!overview&&!finished){ctx.save();ctx.setLineDash([3,5]);ctx.lineWidth=1.3;ctx.strokeStyle='#cbe6cf60';const b=state.b;path([[b.x+Math.cos(aim)*28,b.y+Math.sin(aim)*28],[b.x+Math.cos(aim)*195,b.y+Math.sin(aim)*195]]);ctx.stroke();ctx.restore();circle(ctx,state.b.x+Math.cos(aim)*195,state.b.y+Math.sin(aim)*195,4,null,'#bfd9c180',1);}
+ ctx.restore();if(overview){ctx.textAlign='center';ctx.fillStyle='#dbebdb';ctx.font='12px system-ui';ctx.fillText('OVERVIEW · PAUSED · V OR CLICK TO RETURN',W/2,H-135);ctx.textAlign='left';}
+ const r=F.reserve(state);wg.setTransform(2,0,0,2,0,0);wg.clearRect(0,0,64,64);rotor(wg,32,32,25,state.rotor.a);wg.lineWidth=3;for(const [a,value,c]of [[Math.PI*.55,r.a,'#ffc979'],[-Math.PI*.45,r.d,'#8de0c3']]){wg.strokeStyle='#334b53';wg.beginPath();wg.arc(32,32,30,a,a+Math.PI*.8);wg.stroke();wg.strokeStyle=c;wg.beginPath();wg.arc(32,32,30,a,a+Math.PI*.8*value);wg.stroke();}
+}
+function updateHUD(){const r=F.reserve(state);el('clock').textContent=time(elapsed);el('reserve-a').textContent=Math.round(r.a*100)+'%';el('reserve-d').textContent=Math.round(r.d*100)+'%';el('fill-a').style.transform=`scaleX(${r.a})`;el('fill-d').style.transform=`scaleX(${r.d})`;el('spin').textContent=`${r.rel>=0?'+':''}${r.rel.toFixed(1)} rad/s`;el('leg-state').textContent=state.rest>120?'LEG · EXTEND':state.rest<75?'LEG · TUCK':'LEG · REST';if(performance.now()>toastUntil)el('status').classList.remove('show');}
+function frame(now){const delta=last?Math.min((now-last)/1000,.06):0;last=now;if(active()){accumulator+=delta;let n=0;while(accumulator>=F.DT&&n++<16){step();accumulator-=F.DT;if(finished)break;}}else accumulator=0;updateView(delta);render();if(now-uiTick>70){updateHUD();uiTick=now;}requestAnimationFrame(frame);}
+load(0);requestAnimationFrame(frame);
+// Deliberately discoverable lab tools. No network or hidden gameplay effects.
+window.springheel=Object.freeze({version:'2.0.0',physics:F,courses,get state(){return state;},get run(){return {index,checkpoint,elapsed,paused,overview,finished,started};},load,hangingStart,retry:reset,inspect:()=>({momentum:F.momentum(state),centreOfMass:F.com(state),reserve:F.reserve(state)}),snapshot:()=>JSON.parse(JSON.stringify(state)),setState:s=>{if(!s||!s.b||!s.f||!s.rotor)throw new TypeError('Expected a physics snapshot');state=JSON.parse(JSON.stringify(s));}});
+console.info('Springheel workshop: springheel.inspect(), springheel.physics, springheel.load(7). No secret air thrusters.');
+})();
+</script>
+</body>
+</html>
