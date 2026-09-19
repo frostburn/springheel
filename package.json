@@ -1,0 +1,12 @@
+{
+  "name": "springheel",
+  "version": "2.0.0",
+  "private": true,
+  "description": "A single-file Newtonian spring-leg and reaction-wheel browser game.",
+  "scripts": {
+    "test": "node --test tests/physics.test.cjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
