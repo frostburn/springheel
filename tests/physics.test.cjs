@@ -7,7 +7,7 @@ const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),
 const source=html.match(/<script id="physics">([\s\S]*?)<\/script>/)[1];
 const scope={};vm.createContext(scope);vm.runInContext(source+';globalThis.F=SpringheelPhysics;',scope);const F=scope.F;
 const near=(a,b,t=1e-5)=>assert.ok(Math.abs(a-b)<t,`${a} vs ${b}`);
-const empty={solids:[],pegs:[],gravity:0};
+const empty={solids:[],pegs:[],gravity:0,airDensity:0};
 const ground={solids:[F.box(-2000,560,4000,1000)],pegs:[]};
 function run(s,seconds,input,world=empty){for(let i=0;i<Math.round(seconds/F.DT);i++)F.step(s,typeof input==='function'?input(i*F.DT):input,world);return s;}
 function finite(s){for(const v of [s.b.x,s.b.y,s.b.vx,s.b.vy,s.b.a,s.b.w,s.f.x,s.f.y,s.f.vx,s.f.vy,s.rotor.w])assert.ok(Number.isFinite(v));}
@@ -26,7 +26,7 @@ test('gyro saturation and relative brake do not delete angular momentum',()=>{
  const s=F.create(0,0);s.rotor.w=F.P.rotorLimit-.1;const initial=F.momentum(s).angular;run(s,8,{aim:Math.PI/2,gyro:-1});const r=F.reserve(s);assert.ok(r.a<.01);assert.ok(r.d>.99);near(F.momentum(s).angular,initial,.001);
  const before=F.momentum(s).angular;run(s,4,{aim:Math.PI/2,brake:true});near(F.momentum(s).angular,before,.001);assert.ok(Math.abs(s.rotor.w-s.b.w)<.02);
 });
-test('stays supported without global drag and has a repeatable physical hop',()=>{
+test('stays supported with chassis air drag and has a repeatable physical hop',()=>{
  const s=F.create(180,454);run(s,2,{aim:Math.PI/2},ground);finite(s);assert.ok(Math.abs(s.b.y-458.5)<3);const y=s.b.y;
  let high=y;for(let i=0;i<240;i++){F.step(s,{aim:Math.PI/2,kick:i<50},ground);high=Math.min(high,s.b.y);}assert.ok(y-high>90,`hop height ${y-high}`);assert.ok(y-high<350,`hop height ${y-high}`);
 });
@@ -61,6 +61,57 @@ test('a moving, initially separate machine can thread and catch the rail',()=>{
 test('holding a turn key converges to a rate, with no direct velocity clamp',()=>{
  const s=F.create();run(s,3,{aim:Math.PI/2,gyro:-1});near(s.b.w,-F.P.turnRate,.001);near(F.momentum(s).angular,0,.001);
  const w=s.b.w;run(s,1,{aim:Math.PI/2});near(s.b.w,w,.001);
+});
+
+test('air drag slows either spin direction without braking the internal rotor or COM',()=>{
+ for(const spin of [-20,20]){
+  const s=F.create();s.b.w=spin;s.rotor.w=30;s.b.vx=s.f.vx=120;
+  const before=F.momentum(s);run(s,2,{aim:Math.PI/2},{...empty,airDensity:1});
+  assert.equal(Math.sign(s.b.w),Math.sign(spin));assert.ok(Math.abs(s.b.w)<1);
+  near(s.rotor.w,30);near(F.com(s).vx,120);near(F.momentum(s).y,before.y);
+  near(F.momentum(s).angular-before.angular,F.P.bodyI*(s.b.w-spin),.001);
+ }
+});
+test('drag resists sustained aiming recoil and still permits deliberate gyro turns',()=>{
+ const vacuum=F.create(),air=F.create();
+ run(vacuum,5,t=>({aim:Math.PI/2+t*4}));
+ run(air,5,t=>({aim:Math.PI/2+t*4}),{...empty,airDensity:1});
+ assert.ok(Math.abs(air.b.w)<Math.abs(vacuum.b.w)*.4);
+ for(const gyro of [-1,1]){
+  const s=F.create();run(s,2,{aim:Math.PI/2,gyro},{...empty,airDensity:1});
+  assert.ok(s.b.w*gyro>4&&s.b.w*gyro<=F.P.turnRate);
+ }
+});
+test('drag-only decay is stable and independent of substep size',()=>{
+ for(const spin of [-1000,-5,5,1000]){
+  const results=[];
+  for(const dt of [1/120,1/240,1/480]){
+   const s=F.create();s.b.w=spin;
+   for(let i=0;i<Math.round(1/dt);i++)F.step(s,{aim:Math.PI/2},{...empty,airDensity:1},dt);
+   assert.equal(Math.sign(s.b.w),Math.sign(spin));results.push(s.b.w);
+  }
+  near(results[0],results[1],1e-8);near(results[1],results[2],1e-8);
+ }
+});
+
+// Run the shipped pause/map functions with a minimal DOM; no duplicate logic.
+function pauseUI(paused=false){
+ const nodes={};const el=id=>nodes[id]??=( {hidden:false,textContent:'',setAttribute(k,v){this[k]=v;}} );
+ const ui={paused,overview:false,finished:false,accumulator:1,el,clearInput(){},toast(){}};
+ vm.createContext(ui);
+ vm.runInContext(html.slice(html.indexOf('function setCurtain()'),html.indexOf('function help()')),ui);
+ ui.setCurtain();return {ui,nodes};
+}
+for(const wasPaused of [false,true])test(`map round trip preserves paused=${wasPaused}`,()=>{
+ const {ui,nodes}=pauseUI(wasPaused);
+ ui.toggleMap();assert.equal(ui.overview,true);assert.equal(ui.paused,wasPaused);assert.equal(nodes.curtain.hidden,true);
+ ui.toggleMap();assert.equal(ui.overview,false);assert.equal(ui.paused,wasPaused);assert.equal(nodes.curtain.hidden,!wasPaused);
+ assert.equal(ui.accumulator,0);
+});
+for(const wasPaused of [false,true])test(`pause button in map returns to pause, previously paused=${wasPaused}`,()=>{
+ const {ui,nodes}=pauseUI(wasPaused);ui.toggleMap();ui.togglePause();
+ assert.equal(ui.overview,false);assert.equal(ui.paused,true);assert.equal(nodes.curtain.hidden,false);
+ ui.togglePause();assert.equal(ui.paused,false);assert.equal(nodes.curtain.hidden,true);
 });
 
 // Exercise actual authored terrain as well as isolated physics. This controller

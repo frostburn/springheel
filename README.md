@@ -32,7 +32,7 @@ On touch screens, drag on the playfield to aim and use the bottom buttons to tur
 
 The flywheel has three unequal coloured sectors and a white index spoke. It rotates independently of the chassis. The A/D rim arcs and bars show remaining **directional speed headroom**, not an invented energy battery. One direction can run out while the other remains available. Reverse the motor or brake to exchange momentum; there is no free in-flight recharge.
 
-A/D use a bounded motor-torque controller that requests a turn rate. They do not overwrite angular velocity. Releasing a key coasts. Contact loads, leg reactions, and rotor saturation can prevent the requested rate from being reached.
+A/D use a bounded motor-torque controller that requests a turn rate. They do not overwrite angular velocity. Releasing a key coasts against chassis air resistance: fast spins fade more strongly than slow turns. Contact loads, leg reactions, air drag, and rotor saturation can prevent the requested rate from being reached. The enclosed flywheel is not air-braked.
 
 The leg label reports rest / extend / tuck. The leg motor is not coupled to a stamina meter. The optional dotted trajectory is for the combined centre of mass under gravity alone; it ignores future collisions and is not a foot-placement prediction.
 
@@ -48,7 +48,7 @@ All runtime code, styles, geometry, artwork, and sound are in `index.html`. The 
 - The massless telescopic strut has an actuated, damped radial spring. A bounded angular servo aims the foot. Both apply equal/opposite forces; the chassis also receives the opposite orbital torque from aiming. Radial extension at the centre produces no direct chassis torque.
 - The gyro exchanges equal/opposite angular impulses with the chassis. Motor impulses are limited near the relative wheel-speed limit; no body velocity or momentum is silently clipped. Contact or aiming can back-drive the rotor beyond the motor's nominal speed limit.
 - Rounded chassis samples, the foot, and the rod collide with static solid terrain and brass rails. Sequential contact impulses supply normal forces and friction. A small contact-only penetration repair addresses numerical overlap. This is a discrete game solver, not an exact analytic contact solution.
-- There is no arbitrary air steering or global linear/angular damping. In free flight, internal input preserves total linear and angular momentum; gravity moves the combined centre of mass ballistically. Springs, servos, brakes, and contacts may dissipate energy; powered motors supply work.
+- Rotational air resistance applies an external torque to the exposed chassis: `-bodyI * airDensity * (0.9*w + 0.25*w*abs(w))`. Its drag-only step is integrated analytically, so it cannot reverse spin or overshoot. There is no translational drag or arbitrary air steering: the combined centre of mass remains ballistic. The air carries away angular momentum; internal motors still exchange equal/opposite impulses. Set `world.airDensity = 0` for vacuum conservation tests (default is 1). The internal rotor retains its momentum unless acted on by its motor/brake. Springs, servos, brakes, drag, and contacts may dissipate energy; powered motors supply work.
 
 The render loop limits catch-up work after slow frames instead of applying one large unstable time step. The scene and sound have no external dependencies. Native buttons, a course selector, a modal field guide, and a responsive HUD surround the canvas.
 
@@ -56,7 +56,9 @@ The render loop limits catch-up work after slow frames instead of applying one l
 
 Run `npm test` (Node 20 or later; no `npm install` needed).
 
-The 20 regression tests cover script parsing and offline packaging; free-flight conservation; ballistic centre-of-mass motion; rotor saturation, rate control, and braking; radial versus angular leg reactions; crouch priority; supported hopping; collision normals and rod geometry; long-run stability; a moving hook catch; rail and ledge support; physical release; and scripted completion of courses 1, 3, 5, and 7 using ordinary aim/stroke inputs. These deterministic runs are regression checks, not claimed human records or an exhaustive playtest of every route.
+The 27 regression tests cover script parsing and offline packaging; vacuum conservation; ballistic centre-of-mass motion; rotor saturation, rate control, and braking; radial versus angular leg reactions; crouch priority; supported hopping; collision normals and rod geometry; long-run stability; a moving hook catch; rail and ledge support; physical release; scripted completion of courses 1, 3, 5, and 7; bidirectional spin decay and angular-momentum accounting; sustained aiming recoil and usable gyro turns with air; timestep-independent drag; and pause/map state transitions using the shipped UI functions with a minimal DOM stub. These deterministic runs are regression checks, not claimed human records or an exhaustive playtest of every route.
+
+Opening the map preserves the underlying pause state and temporarily hides the pause card. Closing the map restores that state; pressing Pause while viewing the map always returns to a paused game.
 
 For browser smoke testing, check hopping, gyro reserves, the hanging-start exercise, checkpoint retry, full restart, finish/next-course flow, pause, the map and modal, sound, pointer cancellation, touch controls, and a narrow viewport. Native local-storage persistence and cross-browser audio should also be checked on the eventual hosting origin.
 
