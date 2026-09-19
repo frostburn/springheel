@@ -1,12 +1,23 @@
 {
   "name": "springheel",
-  "version": "2.0.0",
+  "version": "2.1.0",
+  "type": "module",
   "private": true,
   "description": "A single-file Newtonian spring-leg and reaction-wheel browser game.",
   "scripts": {
-    "test": "node --test tests/physics.test.cjs"
+    "build": "node scripts/build.mjs",
+    "build:check": "node scripts/build.mjs --check",
+    "dev": "node scripts/dev.mjs",
+    "test": "node --test tests/*.test.js",
+    "format": "prettier --write src scripts tests docs README.md CONTRIBUTING.md package.json .github",
+    "format:check": "prettier --check src scripts tests docs README.md CONTRIBUTING.md package.json .github",
+    "check": "npm run format:check && npm run build:check && npm test"
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "prettier": "3.9.8"
   }
 }

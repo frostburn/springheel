@@ -1,26 +1,54 @@
 # Springheel
 
-A little leverage: a single-file browser physics game about a spring leg, a reaction-wheel gyro, and a hook-shaped chassis. Seven courses and a free-practice yard. No lives, damage, external assets, libraries, installation, or build step.
+A little leverage: a browser physics game about a spring leg, a reaction-wheel gyro, and a hook-shaped chassis. Twelve courses and a free-practice yard. No lives, damage, or runtime downloads.
 
-Open **`index.html`** in a browser. Alternatively, serve this directory with `python3 -m http.server 8000` and open the local server. The game itself makes no network requests. Sound starts muted.
+Open **`index.html`** in a browser. It is the complete offline release: no installation or build is needed to play. Alternatively, serve the repository with `python3 -m http.server 8000`. The game makes no network requests. Sound starts muted.
+
+## Develop
+
+Use Node 20 or later. The readable ES modules, HTML, and CSS live in `src/`; `index.html` is generated and committed for downloads and static hosting.
+
+```sh
+npm ci
+npm run dev       # source at http://127.0.0.1:8000; reload after editing
+npm run format    # consistent formatting
+npm run build     # regenerate the standalone index.html
+npm run check     # formatting, release freshness, and regression suite
+```
+
+Only the development tools (esbuild and Prettier) are dependencies; neither ships as a runtime dependency. The lockfile pins installs. CI runs the same checks on Node 20, 22, and 24. See [CONTRIBUTING.md](CONTRIBUTING.md) for the code map and [course authoring](docs/course-authoring.md) for adding terrain safely.
+
+## Courses
+
+The original seven courses retain their layouts and saved-record identities. Version 2.1 adds five short challenges before the practice yard:
+
+| Course                 | Main challenge                                                      |
+| ---------------------- | ------------------------------------------------------------------- |
+| 08 · Tidal steps       | Descend to the quay, control the landing, then climb out            |
+| 09 · The sawtooth mile | Alternate ramps, shelves, and small drops                           |
+| 10 · Low clearance     | Time the spring around two low lintels                              |
+| 11 · Brass orchard     | Hop between plinths with optional brass catches and recovery floors |
+| 12 · Last light        | Link a ramp, a roof, and rising terraces                            |
+
+Every course is available immediately in the selector. Finishing course seven now continues into the expansion; finishing course twelve offers the yard.
 
 ## Controls
 
-| Input | Action |
-| --- | --- |
-| Mouse pointer | Aim the leg in world space, independently of the chassis |
-| Left mouse | Extend the spring's resting length / kick |
-| Right mouse | Retract / crouch; takes priority over left mouse |
-| A / D | Request counterclockwise / clockwise chassis rotation through the gyro motor |
-| S | Brake the flywheel relative to the chassis; the chassis takes the reaction |
-| R | Retry the latest checkpoint, keeping the elapsed time |
-| Shift+R | Restart the course and clock |
-| V | Paused course overview |
-| P / Escape | Pause / resume |
-| I | Toggle the free-flight centre-of-mass guide |
-| G | Toggle the personal-best ghost |
-| H | Field guide, including a hanging-start practice button |
-| M | Toggle synthesized sound |
+| Input         | Action                                                                       |
+| ------------- | ---------------------------------------------------------------------------- |
+| Mouse pointer | Aim the leg in world space, independently of the chassis                     |
+| Left mouse    | Extend the spring's resting length / kick                                    |
+| Right mouse   | Retract / crouch; takes priority over left mouse                             |
+| A / D         | Request counterclockwise / clockwise chassis rotation through the gyro motor |
+| S             | Brake the flywheel relative to the chassis; the chassis takes the reaction   |
+| R             | Retry the latest checkpoint, keeping the elapsed time                        |
+| Shift+R       | Restart the course and clock                                                 |
+| V             | Paused course overview                                                       |
+| P / Escape    | Pause / resume                                                               |
+| I             | Toggle the free-flight centre-of-mass guide                                  |
+| G             | Toggle the personal-best ghost                                               |
+| H             | Field guide, including a hanging-start practice button                       |
+| M             | Toggle synthesized sound                                                     |
 
 On touch screens, drag on the playfield to aim and use the bottom buttons to turn, brake, tuck, and kick. Pointer cancellation, focus loss, and opening the guide clear held inputs. Losing focus also pauses the simulation.
 
@@ -38,11 +66,15 @@ The leg label reports rest / extend / tuck. The leg motor is not coupled to a st
 
 ## Less punishment, still physics
 
-Pennants save checkpoints. Low catch floors offer another chance. R restores a checkpoint without a death animation or lost life; retries keep the run clock going. Best times and sampled ghosts are stored locally when browser storage is available. Storage failures are nonfatal and leave the current session playable. Ghost recordings are capped at 9,000 samples, approximately ten minutes at 15 Hz.
+Pennants save checkpoints. Low catch floors offer another chance. R restores a checkpoint without a death animation or lost life; retries keep the run clock going. Best times and sampled ghosts are stored locally when browser storage is available. Storage failures are nonfatal and leave the current session playable. Ghost recordings are capped at 9,000 samples, approximately ten minutes at 15 Hz (retry boundaries add samples).
+
+Ghosts interpolate body position, foot position, and rotation at display time. New recordings accumulate full turns between samples so the fast flywheel keeps spinning in the correct direction. Retries create explicit cuts instead of sliding across the course. Older ghosts also interpolate, using shortest-angle rotation and a conservative jump detector; their original samples do not contain full-turn or retry metadata. See [the replay format](docs/replays.md).
+
+Records use stable course IDs. Existing numeric-slot records migrate in memory and are saved in the new format on the next personal best; the original save is left intact. Saves remain local to the browser and origin. Downloaded copies may have separate storage depending on browser behavior.
 
 ## Physics and implementation
 
-All runtime code, styles, geometry, artwork, and sound are in `index.html`. The physics script is separate from the UI script within that file so the tests exercise exactly the shipped solver.
+Source modules separate the solver, course data, canvas rendering, sound, ghost recording/playback, and persistence. The build embeds everything into `index.html`. Tests import the source modules directly and compare the bundled solver against the source solver.
 
 - A fixed 1/240-second step integrates a rigid chassis, a massive foot, and an independent rotor. The chassis centre of mass is the central axle; its lower counterweight represents the balancing mass. Inertias and lengths use game-scale units, not a scale drawing of a manufactured mechanism.
 - The massless telescopic strut has an actuated, damped radial spring. A bounded angular servo aims the foot. Both apply equal/opposite forces; the chassis also receives the opposite orbital torque from aiming. Radial extension at the centre produces no direct chassis torque.
@@ -54,9 +86,9 @@ The render loop limits catch-up work after slow frames instead of applying one l
 
 ## Tests
 
-Run `npm test` (Node 20 or later; no `npm install` needed).
+Run `npm ci` once, then `npm run check`. `npm test` runs the suite without rebuilding, so run `npm run build` after source edits.
 
-The 27 regression tests cover script parsing and offline packaging; vacuum conservation; ballistic centre-of-mass motion; rotor saturation, rate control, and braking; radial versus angular leg reactions; crouch priority; supported hopping; collision normals and rod geometry; long-run stability; a moving hook catch; rail and ledge support; physical release; scripted completion of courses 1, 3, 5, and 7; bidirectional spin decay and angular-momentum accounting; sustained aiming recoil and usable gyro turns with air; timestep-independent drag; and pause/map state transitions using the shipped UI functions with a minimal DOM stub. These deterministic runs are regression checks, not claimed human records or an exhaustive playtest of every route.
+The suite covers vacuum conservation; ballistic centre-of-mass motion; rotor saturation and air drag; hopping, catches, ledge support and release; scripted completion of courses 1, 3, 5, 7 and all five new courses; safe starts/checkpoints across all terrain; replay timing, rotation and reset cuts; storage migration and failures; deterministic offline builds; and full-app wiring with a minimal DOM/canvas stub. These deterministic runs are regression checks, not human records or an exhaustive playtest. The stub does not verify rendering, browser focus behavior, or native storage.
 
 Opening the map preserves the underlying pause state and temporarily hides the pause card. Closing the map restores that state; pressing Pause while viewing the map always returns to a paused game.
 
@@ -64,4 +96,4 @@ For browser smoke testing, check hopping, gyro reserves, the hanging-start exerc
 
 ## Workshop console
 
-`springheel.inspect()` reports momentum, centre of mass, and gyro reserves. `springheel.load(7)` opens the yard; `springheel.hangingStart()` sets up the rail exercise. `springheel.snapshot()` and `springheel.setState(snapshot)` support reproducible physics investigations. `springheel.physics` exposes the solver and constants. These tools do not run unless called.
+`springheel.inspect()` reports momentum, centre of mass, and gyro reserves. `springheel.load('practice-yard')` opens the yard; original numeric indices still work, including `load(7)`. `springheel.load('brass-orchard')` opens a new course. `springheel.hangingStart()` sets up the rail exercise. `springheel.snapshot()` and `springheel.setState(snapshot)` support reproducible physics investigations. `springheel.physics` exposes the solver and constants. These tools do not run unless called.

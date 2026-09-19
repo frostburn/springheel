@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#101f29" />
+    <title>Springheel — a little leverage</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23101f29'/%3E%3Cpath d='M11 25V11a7 7 0 1 1 10 6' fill='none' stroke='%238de0c3' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='11' cy='25' r='4' fill='%23ffc979'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>spring<span>heel</span></h1>
+        <div class="edition">A LITTLE LEVERAGE</div>
+      </div>
+      <div class="course-picker">
+        <label for="course">Course</label
+        ><select id="course" aria-label="Select a course"></select>
+      </div>
+      <nav aria-label="Game controls">
+        <button id="retry" title="R: checkpoint · Shift+R: start over">
+          Retry <span class="subtle">R</span></button
+        ><button id="pause" aria-pressed="false">Pause</button
+        ><button id="overview" aria-pressed="false" title="V">Map</button
+        ><button id="sound" aria-pressed="false" title="M">Sound off</button
+        ><button id="help" title="H">Field guide</button>
+      </nav>
+    </header>
+    <main id="stage">
+      <canvas
+        id="game"
+        tabindex="0"
+        aria-label="Springheel physics playground. Aim the spring leg with the mouse, extend with left click, retract with right click, and rotate the hook with A and D. Press H for instructions."
+      ></canvas>
+      <div id="mission" class="readout">
+        <div class="number" id="course-number"></div>
+        <h2 id="course-title"></h2>
+        <p id="course-hint"></p>
+      </div>
+      <div id="run" class="readout">
+        <div id="clock">0:00.00</div>
+        <div id="best">BEST —</div>
+        <div id="checkpoint">START · unlimited retries</div>
+      </div>
+      <div id="status" role="status" aria-live="polite"></div>
+      <div id="bottom">
+        <div id="controls">
+          <div>
+            <strong>Point below you.</strong> <kbd>Left mouse</kbd> extend /
+            kick · <kbd>Right</kbd> tuck
+          </div>
+          <div>
+            <kbd>A</kbd> <kbd>D</kbd> turn the hook · <kbd>S</kbd> brake the
+            flywheel
+          </div>
+          <div class="subtle">
+            <kbd>R</kbd> checkpoint · <kbd>V</kbd> map · <kbd>I</kbd> flight arc
+            · <kbd>G</kbd> ghost · <kbd>H</kbd> guide
+          </div>
+        </div>
+        <div id="instruments">
+          <canvas
+            id="wheel"
+            width="128"
+            height="128"
+            aria-hidden="true"
+          ></canvas>
+          <div class="instrument-copy">
+            <div class="instrument-title">GYRO KICK RESERVE</div>
+            <div class="reserves">
+              <div class="reserve">
+                A <span id="reserve-a">100%</span>
+                <div class="track"><div class="fill" id="fill-a"></div></div>
+              </div>
+              <div class="reserve">
+                D <span id="reserve-d">100%</span>
+                <div class="track"><div class="fill" id="fill-d"></div></div>
+              </div>
+            </div>
+            <div class="stroke">
+              <span id="spin">0 rad/s</span
+              ><span id="leg-state">LEG · REST</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="touch" aria-label="Touch controls">
+        <div>
+          <button data-key="KeyA" aria-label="Turn hook counterclockwise">
+            A ↶</button
+          ><button data-key="KeyS" aria-label="Brake flywheel">S</button
+          ><button data-key="KeyD" aria-label="Turn hook clockwise">D ↷</button>
+        </div>
+        <div>
+          <button data-action="tuck">Tuck</button
+          ><button data-action="kick">Kick</button>
+        </div>
+      </div>
+      <div id="curtain" hidden>
+        <section class="pause-card">
+          <h2 id="curtain-title">Take a breather.</h2>
+          <p id="curtain-text">Your spring will keep.</p>
+          <button id="resume" class="primary">Keep going</button
+          ><button id="restart-run">Start over</button>
+        </section>
+      </div>
+    </main>
+    <dialog id="manual" aria-labelledby="manual-title">
+      <button class="close" id="close-guide">Close</button>
+      <h2 id="manual-title">A little leverage.</h2>
+      <p>
+        You are a spring leg, a flywheel, and a decidedly useful hook. Reach the
+        striped gate. No lives, no damage, no timer limit. Every pennant is a
+        checkpoint; the low floors are there to catch you.
+      </p>
+      <h3>Start with a hop</h3>
+      <p>
+        Point <strong>below and a little behind</strong> the machine, then hold
+        left mouse to extend. Release to settle back to the normal length. Right
+        mouse retracts the leg; tuck, then extend for a bigger hop. Aim at the
+        ground you want to push <em>away from</em>, not the place you want to
+        go.
+      </p>
+      <h3>Free aim. Real recoil.</h3>
+      <p>
+        The leg attaches at the central axle and can aim all the way around. A
+        motor moves its resting angle, rather than teleporting the foot. The
+        body takes the opposite reaction. In open air you can rearrange
+        yourself, but you cannot steer the combined centre of mass.
+      </p>
+      <h3>Use your head. It is a hook.</h3>
+      <p>
+        Turn with A / D to put the open throat around a ledge or brass lip. The
+        curved chassis can bear your weight and pivot on contact. There is no
+        grab button, snap, glue, or invisible rope. Peel out with A, or push
+        away with the leg to release. A deeply loaded hook may need a swing
+        first. The brass practice rail is a good place to learn.
+      </p>
+      <button id="hanging-start">Try a hanging start in the yard</button>
+      <h3>The flywheel is not a jetpack</h3>
+      <p>
+        A / D ask the motor for a steady turn rate, trading angular momentum
+        between the wheel and chassis. Let go to coast against air resistance:
+        slow turns remain useful, while fast spins fade quickly. Drag acts only
+        on the exposed chassis, not the enclosed flywheel. The unequal coloured
+        sectors and white spoke show its actual rotation. The two rim arcs and
+        reserve bars show how much acceleration remains in
+        <em>each direction</em>. At the wheel's speed limit that direction runs
+        out. Reverse to recover headroom, or use S to brake the wheel
+        <em>relative to the chassis</em>—which also reacts on the chassis. Air
+        carries away chassis angular momentum; the flywheel does not magically
+        recharge.
+      </p>
+      <table>
+        <tr>
+          <td><kbd>Mouse</kbd></td>
+          <td>Aim the leg in world space, independently of the hook.</td>
+        </tr>
+        <tr>
+          <td><kbd>Left / right</kbd></td>
+          <td>
+            Extend / retract resting length. Right takes priority when both are
+            held.
+          </td>
+        </tr>
+        <tr>
+          <td><kbd>A</kbd> / <kbd>D</kbd> · <kbd>S</kbd></td>
+          <td>Rotate hook anticlockwise / clockwise · relative wheel brake.</td>
+        </tr>
+        <tr>
+          <td><kbd>R</kbd> · <kbd>Shift R</kbd></td>
+          <td>Retry checkpoint · restart course and clock.</td>
+        </tr>
+        <tr>
+          <td><kbd>V</kbd> · <kbd>P</kbd> / <kbd>Esc</kbd></td>
+          <td>Paused course overview · pause.</td>
+        </tr>
+        <tr>
+          <td><kbd>I</kbd> · <kbd>G</kbd> · <kbd>M</kbd></td>
+          <td>Ballistic centre-of-mass guide · best-run ghost · sound.</td>
+        </tr>
+      </table>
+      <p class="subtle">
+        On touch screens: drag on the playfield to aim; use the bottom buttons
+        to kick, tuck, and turn. Local bests and ghosts stay in this browser. A
+        retry keeps the clock running. The dotted flight guide ignores future
+        contacts and is not a foot trajectory.
+      </p>
+    </dialog>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
