@@ -56,6 +56,8 @@ Every course is available immediately in the selector. Finishing course seven no
 
 On touch screens, drag on the playfield to aim and use the bottom buttons to turn, brake, tuck, and kick. Pointer cancellation, focus loss, and opening the guide clear held inputs. Losing focus also pauses the simulation.
 
+**Chasing a record:** click **Restart** in the header or press **Shift+R** for a fresh course, clock, and recording while keeping your saved best and ghost. **Retry / R** still returns to the checkpoint with the clock running.
+
 **First hop:** point below and a little behind the axle. Let the foot plant, then extend. Release to reset the stroke. A crouch followed by extension gives a bigger hop. Point at the ground to push away from, not at the destination.
 
 **Hook practice:** open the field guide and choose the hanging start. The machine starts threaded onto a brass rail. Hold A to peel out. The hook can also catch protruding brass ledges during ordinary motion; there is no grab button, attraction, snap-to-anchor, or hidden attachment joint.
