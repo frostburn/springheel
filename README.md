@@ -16,7 +16,11 @@ npm run build     # regenerate the standalone index.html
 npm run check     # formatting, release freshness, and regression suite
 ```
 
-Only the development tools (esbuild and Prettier) are dependencies; neither ships as a runtime dependency. The lockfile pins installs. CI runs the same checks on Node 20, 22, and 24. See [CONTRIBUTING.md](CONTRIBUTING.md) for the code map and [course authoring](docs/course-authoring.md) for adding terrain safely.
+Only the development tools (esbuild and Prettier) are dependencies; neither ships as a runtime dependency. The lockfile pins installs. CI runs on Node 24, matching the development runtime. See [CONTRIBUTING.md](CONTRIBUTING.md) for the code map and [course authoring](docs/course-authoring.md) for adding terrain safely.
+
+## License
+
+Springheel is released under the [MIT License](LICENSE). The standalone HTML includes the license notice.
 
 ## Courses
 

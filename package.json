@@ -3,6 +3,7 @@
   "version": "2.1.0",
   "type": "module",
   "private": true,
+  "license": "MIT",
   "description": "A single-file Newtonian spring-leg and reaction-wheel browser game.",
   "scripts": {
     "build": "node scripts/build.mjs",
