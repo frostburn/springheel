@@ -27,6 +27,12 @@
       <nav aria-label="Game controls">
         <button id="retry" title="R: checkpoint · Shift+R: start over">
           Retry <span class="subtle">R</span></button
+        ><button
+          id="restart"
+          title="Shift+R: restart course and clock"
+          aria-keyshortcuts="Shift+R"
+        >
+          Restart</button
         ><button id="pause" aria-pressed="false">Pause</button
         ><button id="overview" aria-pressed="false" title="V">Map</button
         ><button id="sound" aria-pressed="false" title="M">Sound off</button
@@ -61,8 +67,9 @@
             flywheel
           </div>
           <div class="subtle">
-            <kbd>R</kbd> checkpoint · <kbd>V</kbd> map · <kbd>I</kbd> flight arc
-            · <kbd>G</kbd> ghost · <kbd>H</kbd> guide
+            <kbd>R</kbd> checkpoint · <kbd>Shift R</kbd> restart ·
+            <kbd>V</kbd> map · <kbd>I</kbd> flight arc · <kbd>G</kbd> ghost ·
+            <kbd>H</kbd> guide
           </div>
         </div>
         <div id="instruments">

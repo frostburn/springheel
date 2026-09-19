@@ -3,6 +3,47 @@ import assert from "node:assert/strict";
 import { createHarness } from "./helpers/game-harness.js";
 import { RECORDS_KEY } from "../src/records.js";
 
+for (const action of ["button", "shortcut"])
+  test(`full restart via ${action} resets the run and retains the saved ghost`, () => {
+    const saved = JSON.stringify({
+      "first-spring": {
+        time: 10,
+        ghost: {
+          version: 2,
+          frames: [
+            [0, 100, 200, 0, 100, 296, 0, 0],
+            [0.08, 180, 200, 0, 180, 296, 0, 0],
+          ],
+        },
+      },
+    });
+    const h = createHarness({ [RECORDS_KEY]: saved });
+    h.frame();
+    h.event("keydown", { code: "KeyD" });
+    h.frame();
+    h.event("keyup", { code: "KeyD" });
+    const level = h.app.courses[0],
+      checkpoint = level.checks[0];
+    h.app.setState(h.app.physics.create(checkpoint.x, checkpoint.y - 106));
+    h.frame();
+    assert.equal(h.app.run.checkpoint, 0);
+    assert.ok(h.app.run.elapsed > 0);
+    h.nodes.get("pause").click();
+    if (action === "button") h.nodes.get("restart").click();
+    else h.event("keydown", { code: "KeyR", shiftKey: true });
+    assert.equal(h.app.run.elapsed, 0);
+    assert.equal(h.app.run.checkpoint, -1);
+    assert.equal(h.app.run.started, false);
+    assert.equal(h.app.run.paused, false);
+    assert.equal(h.app.state.b.x, level.start[0]);
+    assert.equal(h.app.state.b.y, level.start[1]);
+    assert.equal(h.saved[RECORDS_KEY], saved);
+    h.draws.length = 0;
+    h.event("keydown", { code: "KeyD" });
+    h.frame(16);
+    assert.ok(h.draws.some((call) => call.alpha === 0.28 && call.y === 200));
+  });
+
 test("render loop actually draws intermediate ghost poses between recorded samples", () => {
   const frames = [
     [0, 100, 200, 0, 100, 296, 0, 0],

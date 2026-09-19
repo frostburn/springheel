@@ -334,10 +334,12 @@ el("resume").onclick = () => {
   else togglePause();
   canvas.focus();
 };
-el("restart-run").onclick = () => {
-  load(index);
+function restartRun() {
+  reset(true);
   canvas.focus();
-};
+}
+el("restart").onclick = restartRun;
+el("restart-run").onclick = restartRun;
 function toggleSound() {
   muted = !muted;
   el("sound").textContent = muted ? "Sound off" : "Sound on";
@@ -423,8 +425,10 @@ window.addEventListener("keydown", (e) => {
   )
     e.preventDefault();
   if (e.repeat) return;
-  if (e.code === "KeyR") reset(e.shiftKey);
-  else if (e.code === "KeyV") toggleMap();
+  if (e.code === "KeyR") {
+    if (e.shiftKey) restartRun();
+    else reset();
+  } else if (e.code === "KeyV") toggleMap();
   else if (e.code === "KeyH") help();
   else if (e.code === "KeyM") toggleSound();
   else if (e.code === "KeyP" || e.code === "Escape") togglePause();
